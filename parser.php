@@ -18,39 +18,38 @@ class Parser {
         return self::$instance;
     }
     
+    private static $categories_href_de = [
+        ['href' => 'https://fotoservice.fuji.ch/de/fotos-poster', 'lng' => 'de'],
+        ['href' => 'https://fotoservice.fuji.ch/de/Fotobuch', 'lng' => 'de'],
+        ['href' => 'https://fotoservice.fuji.ch/de/handy-tablet', 'lng' => 'de'],
+        ['href' => 'https://fotoservice.fuji.ch/de/wandbilder', 'lng' => 'de'],
+        ['href' => 'https://fotoservice.fuji.ch/de/Fotokalender', 'lng' => 'de'],
+        ['href' => 'https://fotoservice.fuji.ch/de/Fotokarten', 'lng' => 'de'],
+        ['href' => 'https://fotoservice.fuji.ch/de/Fotogeschenke', 'lng' => 'de']
+    ];
+     
+    private static $categories_href_fr = [   
+        ['href' => 'https://fotoservice.fuji.ch/de/fotos-poster?locale=fr_CH', 'lng' => 'fr'],
+        ['href' => 'https://fotoservice.fuji.ch/de/Fotobuch?locale=fr_CH', 'lng' => 'fr'],
+        ['href' => 'https://fotoservice.fuji.ch/de/handy-tablet?locale=fr_CH', 'lng' => 'fr'],
+        ['href' => 'https://fotoservice.fuji.ch/de/wandbilder?locale=fr_CH', 'lng' => 'fr'],
+        ['href' => 'https://fotoservice.fuji.ch/de/Fotokalender?locale=fr_CH', 'lng' => 'fr'],
+        ['href' => 'https://fotoservice.fuji.ch/de/Fotokarten?locale=fr_CH', 'lng' => 'fr'],
+        ['href' => 'https://fotoservice.fuji.ch/de/Fotogeschenke?locale=fr_CH', 'lng' => 'fr']
+    ];
+    
     public function process ( $lang ) {
-
-        $categories_href = [
-            ['href' => 'https://fotoservice.fuji.ch/de/fotos-poster', 'lng' => 'de'],
-            ['href' => 'https://fotoservice.fuji.ch/de/Fotobuch', 'lng' => 'de'],
-            ['href' => 'https://fotoservice.fuji.ch/de/handy-tablet', 'lng' => 'de'],
-            ['href' => 'https://fotoservice.fuji.ch/de/wandbilder', 'lng' => 'de'],
-            ['href' => 'https://fotoservice.fuji.ch/de/Fotokalender', 'lng' => 'de'],
-            ['href' => 'https://fotoservice.fuji.ch/de/Fotokarten', 'lng' => 'de'],
-            ['href' => 'https://fotoservice.fuji.ch/de/Fotogeschenke', 'lng' => 'de'],
-            ['href' => 'https://fotoservice.fuji.ch/fr/fotos-poster', 'lng' => 'fr'],
-            ['href' => 'https://fotoservice.fuji.ch/fr/livres-photo', 'lng' => 'fr'],
-            ['href' => 'https://fotoservice.fuji.ch/fr/handy-tablet', 'lng' => 'fr'],
-            ['href' => 'https://fotoservice.fuji.ch/fr/deorations-murale', 'lng' => 'fr'],
-            ['href' => 'https://fotoservice.fuji.ch/fr/Calendrier', 'lng' => 'fr'],
-            ['href' => 'https://fotoservice.fuji.ch/fr/Cartes', 'lng' => 'fr'],
-            ['href' => 'https://fotoservice.fuji.ch/fr/Cadeaux', 'lng' => 'fr']
-        ];
         
         $product_array = [];
         
+        $categories_href = ( $lang == 'fr' ) ? self::$categories_href_fr : self::$categories_href_de;
+        
         foreach ( $categories_href as $category_href ) {
-            
-            if ( $category_href['lng'] !== $lang ) {
-                continue;
-            }
         
             $dom = HtmlDomParser::file_get_html( $category_href['href'] );
-            
             $items = $dom->find( '.teaser-content' );
             $category = $dom->find( '.breadcrump a', -1 )->plaintext;
             $language = $category_href['lng'];
-            
             $product_href_array = [];
             
             foreach ( $items as $item ) {
@@ -63,6 +62,10 @@ class Parser {
                 
                 if( $href['href'] == 'https://fotoservice.fuji.ch' ) {
                     continue;
+                }
+                
+                if( $lang == 'fr' ) {
+                    $href['href'] .= '?locale=fr_CH';
                 }
                 
                 $product_href_array[] = $href;
@@ -93,7 +96,10 @@ class Parser {
                 
                 $productId = explode( 'productId=', $dom->find( '.breadcrump [href^="/products/details.html?productId="]', 0 )->href )[1];
                 
-                $product['product-id'] = $productId ?? explode( 'productId%3D', $dom->find( '.targetPage', 0 )->attr['data-href'] )[1];
+                $product['product-id'] = $productId ?? 
+                                            ( $lang == 'fr' 
+                                                ? explode( '%26locale%3Dfr_CH', explode( 'productId%3D', $dom->find( '.targetPage', 0 )->attr['data-href'] )[1] )[0]
+                                                : explode( 'productId%3D', $dom->find( '.targetPage', 0 )->attr['data-href'] )[1] );
                 $product['category'] = $category ?? false;
                 $product['language'] = $language ?? 'de';
                 $product_array[] = $product;
