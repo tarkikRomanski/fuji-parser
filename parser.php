@@ -61,7 +61,7 @@ class Parser {
                 $href['price'] = $item->find( '[data-price]', 0 )->attr['data-price'];
                 $href['desc'] = $item->find( '.copy', 0 )->plaintext;
                 
-                if( $href == 'https://fotoservice.fuji.ch' ) {
+                if( $href['href'] == 'https://fotoservice.fuji.ch' ) {
                     continue;
                 }
                 
