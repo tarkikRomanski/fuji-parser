@@ -29,12 +29,12 @@ class Parser {
             ['href' => 'https://fotoservice.fuji.ch/de/Fotokarten', 'lng' => 'de'],
             ['href' => 'https://fotoservice.fuji.ch/de/Fotogeschenke', 'lng' => 'de'],
             ['href' => 'https://fotoservice.fuji.ch/fr/fotos-poster', 'lng' => 'fr'],
-            ['href' => 'https://fotoservice.fuji.ch/fr/Fotobuch', 'lng' => 'fr'],
+            ['href' => 'https://fotoservice.fuji.ch/fr/livres-photo', 'lng' => 'fr'],
             ['href' => 'https://fotoservice.fuji.ch/fr/handy-tablet', 'lng' => 'fr'],
-            ['href' => 'https://fotoservice.fuji.ch/fr/wandbilder', 'lng' => 'fr'],
-            ['href' => 'https://fotoservice.fuji.ch/fr/Fotokalender', 'lng' => 'fr'],
-            ['href' => 'https://fotoservice.fuji.ch/fr/Fotokarten', 'lng' => 'fr'],
-            ['href' => 'https://fotoservice.fuji.ch/fr/Fotogeschenke', 'lng' => 'fr']
+            ['href' => 'https://fotoservice.fuji.ch/fr/deorations-murale', 'lng' => 'fr'],
+            ['href' => 'https://fotoservice.fuji.ch/fr/Calendrier', 'lng' => 'fr'],
+            ['href' => 'https://fotoservice.fuji.ch/fr/Cartes', 'lng' => 'fr'],
+            ['href' => 'https://fotoservice.fuji.ch/fr/Cadeaux', 'lng' => 'fr']
         ];
         
         $product_array = [];
@@ -75,6 +75,8 @@ class Parser {
                 $dom = HtmlDomParser::file_get_html( $item['href'] );
                 $product = [];
                 
+                
+                
                 if( $dom === false ) {
                     continue;
                 }
@@ -84,6 +86,7 @@ class Parser {
                     ?trim($item['price'])
                     :trim($dom->find( '.pricerow strong', 0 )->plaintext);
                 $product['name'] = $dom->find( '.producthead', 0 )->plaintext ?? false;
+                
                 $product['imgs'][] = $dom->find( '[property="og:image"]', 0 )->attr['content'] ?? false;
                 // $product['desc'] = htmlspecialchars( $dom->find( '.detail-wrapper', 0 )->innertext ) ?? false;
                 $product['desc'] = $item['desc'] ?? false;
