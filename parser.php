@@ -85,23 +85,23 @@ class Parser {
                 }
                 
                 $product['href'] = $item['href'] ?? false;
-                $product['price'] = ( $dom->find( '.pricerow strong', 0 )->plaintext == ' ' )
-                    ?trim($item['price'])
-                    :trim($dom->find( '.pricerow strong', 0 )->plaintext);
+                // $product['price'] = ( $dom->find( '.pricerow strong', 0 )->plaintext == ' ' )
+                    // ?trim($item['price'])
+                    // :trim($dom->find( '.pricerow strong', 0 )->plaintext);
                 $product['name'] = $dom->find( '.producthead', 0 )->plaintext ?? false;
                 
-                $product['imgs'][] = $dom->find( '[property="og:image"]', 0 )->attr['content'] ?? false;
+                // $product['imgs'][] = $dom->find( '[property="og:image"]', 0 )->attr['content'] ?? false;
                 // $product['desc'] = htmlspecialchars( $dom->find( '.detail-wrapper', 0 )->innertext ) ?? false;
-                $product['desc'] = $item['desc'] ?? false;
+                // $product['desc'] = $item['desc'] ?? false;
                 
                 $productId = explode( 'productId=', $dom->find( '.breadcrump [href^="/products/details.html?productId="]', 0 )->href )[1];
                 
-                $product['product-id'] = $productId ?? 
-                                            ( $lang == 'fr' 
-                                                ? explode( '%26locale%3Dfr_CH', explode( 'productId%3D', $dom->find( '.targetPage', 0 )->attr['data-href'] )[1] )[0]
-                                                : explode( 'productId%3D', $dom->find( '.targetPage', 0 )->attr['data-href'] )[1] );
-                $product['category'] = $category ?? false;
-                $product['language'] = $language ?? 'de';
+                // $product['product-id'] = $productId ?? 
+                //                             ( $lang == 'fr' 
+                //                                 ? explode( '%26locale%3Dfr_CH', explode( 'productId%3D', $dom->find( '.targetPage', 0 )->attr['data-href'] )[1] )[0]
+                //                                 : explode( 'productId%3D', $dom->find( '.targetPage', 0 )->attr['data-href'] )[1] );
+                // $product['category'] = $category ?? false;
+                // $product['language'] = $language ?? 'de';
                 $product_array[] = $product;
                 
             }
